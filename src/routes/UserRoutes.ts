@@ -1,6 +1,11 @@
 import { Router,  } from "express";
-import { getUsers } from "../controllers/user.controllers";
+import { getUsers, create, update,deleta } from "../controllers/user.controllers";
+const route = Router();
+route.get("/users",getUsers);
+route.post("/create", create);
+route.put("/update/:id",update)
+route.delete("/delete/:id",deleta)
 
-const router = Router();
-router.get("/users",getUsers)
-export default router
+export default route
+
+
