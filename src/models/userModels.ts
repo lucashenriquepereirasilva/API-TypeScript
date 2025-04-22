@@ -1,57 +1,42 @@
-// importar a biblioteca do Row(Linha)Data(Dados)(Pacote)
-// Guardar todos os dados que retorna da consulta Select
-
-// o comando  ResultSetHeader é ultilizado para executar
-// as consultas de modificação das tabelas
-// insert , Update , Delete
-
+//importar a biblioteca do Row(Linha)Data(Dados)(Pacote)
+//Guardar todos os dados que retorna da consulta Select
+//O comando ResultSetHeader é utilizado para executar as consultas de modificação das tabelas.(INSERT, UPDATE, DELETE)
 import { RowDataPacket, ResultSetHeader } from "mysql2";
-
-
+//importando a conexao(pool) com o banco de dados para 
+//fazer uma consulta nas tabelas do banco
 import pool from "../database";
 
-import { promises } from "dns";
-//importando a conexão (pool) com o banco de dados para
-// fazer uma consulta nas tabelas do banco
-
-
-// a interface User faz uma descriçaõ da estrutura 
-// de dados da tabela usuario
+//A interface User faz uma descricao da estrutura
+//de dados da tabela Usuario.
 export interface User extends RowDataPacket {
     id: number;
     name: string;
-    email: string
+    email: string;
 }
 /*
-Exportar a função getAllUsers(pegar todos os usuarios)
-do banco de dados
-Estã função é dp tipo ascíncrona e,  portanto , aguarda
-um processamento será  feito pela linha do await(agurdar)
+Exportar a função getAllUsers(pegarTodosOsUsuarios)
+do banco de dados.
+Esta função é do tipo ascíncrona e, portanto, aguarda
+um processamento interno para realizar a exportação. 
+o processamento será feito pela linha do await(aguardar)
 */
-
 export async function getAllUsers(): Promise<User[]> {
-    const [rows] = await pool.query<User[]>('SELECT * FROM users', [])
-    return rows
+    const [rows] = await pool.query<User[]>("Select * from users", []);
+    return rows;
+
 }
 
 // Função para criar um novo usuário
-
-// agurda   o usuário  ser cadastrado. Portanto, estamos,
-// usando a função como async ...await
-
-// Para cadastrar um usúario será necessario passar  o usúario por parametro
-// e ele será gerenciado pelo seu id
+// Aguarda o usuário ser cadastrado. Portanto, estamos usando a função  como async... await
+/*
+Para cadastrar um usuário será necessário passar o usuário por parâmetro e ele será gerenciado pelo id
+*/
 export async function createUser(user: Omit<User, 'id'>): Promise<ResultSetHeader> {
     try {
         /*
-        Vamos usar o comando insert para cadastrar o usuario
-        no banco de dados estamos  usando tambem o comando no await 
-        que irá esperar  pelo cadastro  completo do usuario
-        na consulta  do insert está sendo passada 2 parametros com o simbolo de ? consultas
-        paramerizadas evitam a injeção de sql
-        */
+        Vamos usar o comando insert para cadastrar o usuário no banco de dados. Estamos usando também o comando await que irá esperar pelo cadastro completo do usuário. Na consulta do insert está sendo passada 2 parametros com o simbolo de ?. Consultas parametrizadas evitam a injeção de sql */
         const [result] = await pool.execute<ResultSetHeader>(
-            'INSERT INTO users (name, email) VALUES (?, ?)',
+            'INSERT INTO users (nomealuno, cpf, idade, telefone) VALUES (?, ?, ?, ?)',
             [user.name, user.email]
         );
         return result;
